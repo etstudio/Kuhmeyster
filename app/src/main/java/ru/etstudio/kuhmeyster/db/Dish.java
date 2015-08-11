@@ -86,7 +86,7 @@ public class Dish {
         this.celebratory = celebratory;
     }
 
-    public boolean isContainsFish() {
+    public boolean containsFish() {
         return containsFish;
     }
 
