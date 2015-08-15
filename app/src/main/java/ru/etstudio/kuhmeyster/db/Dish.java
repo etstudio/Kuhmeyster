@@ -1,12 +1,14 @@
 package ru.etstudio.kuhmeyster.db;
 
+import android.provider.BaseColumns;
+
 import java.util.Date;
 
-public class Dish {
+public final class Dish {
 
-    private int _id;
+    private long _id;
 
-    private int kindId;
+    private long kindId;
 
     private Date added;
 
@@ -22,19 +24,39 @@ public class Dish {
 
     private boolean containsFish;
 
-    public int getId() {
+    public static final String SQL_CREATE_TABLE_DISH = new StringBuffer()
+            .append("CREATE TABLE ")
+            .append(Entry.TABLE_NAME)
+            .append(" (")
+            .append(Entry._ID).append(" INTEGER PRIMARY KEY, ")
+            .append(Entry.COLUMN_KIND_ID).append(" INTEGER, ")
+            .append(Entry.COLUMN_ADD_DATE).append(" INTEGER, ")
+            .append(Entry.COLUMN_TITLE).append(" TEXT, ")
+            .append(Entry.COLUMN_COOKING).append(" TEXT, ")
+            .append(Entry.COLUMN_EVERYDAY).append(" INTEGER, ")
+            .append(Entry.COLUMN_LENTEN).append(" INTEGER, ")
+            .append(Entry.COLUMN_CELEBRATORY).append(" INTEGER, ")
+            .append(Entry.COLUMN_FISH).append(" INTEGER")
+            .append(")").toString();
+
+    public static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + Entry.TABLE_NAME;
+
+    public Dish() {
+    }
+
+    public long getId() {
         return _id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this._id = id;
     }
 
-    public int getKindId() {
+    public long getKindId() {
         return kindId;
     }
 
-    public void setKindId(int kindId) {
+    public void setKindId(long kindId) {
         this.kindId = kindId;
     }
 
@@ -92,5 +114,26 @@ public class Dish {
 
     public void setContainsFish(boolean containsFish) {
         this.containsFish = containsFish;
+    }
+
+    public static abstract class Entry implements BaseColumns {
+
+        public static final String TABLE_NAME = "dish";
+
+        public static final String COLUMN_KIND_ID = "kind_id";
+
+        public static final String COLUMN_ADD_DATE = "add_date";
+
+        public static final String COLUMN_TITLE = "title";
+
+        public static final String COLUMN_COOKING = "cooking";
+
+        public static final String COLUMN_EVERYDAY = "everyday";
+
+        public static final String COLUMN_LENTEN = "lenten";
+
+        public static final String COLUMN_CELEBRATORY = "celebratory";
+
+        public static final String COLUMN_FISH = "fish";
     }
 }

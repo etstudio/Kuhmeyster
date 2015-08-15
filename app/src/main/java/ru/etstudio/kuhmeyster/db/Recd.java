@@ -2,13 +2,17 @@ package ru.etstudio.kuhmeyster.db;
 
 import java.util.Date;
 
-public class Recd {
+public final class Recd {
 
     private int _id;
 
     private int dishId;
 
     private Date lastCooking;
+
+    public Recd() {
+
+    }
 
     public Recd(int id, int dishId) {
         this._id = id;

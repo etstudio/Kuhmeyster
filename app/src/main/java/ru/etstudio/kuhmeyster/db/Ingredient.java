@@ -3,13 +3,17 @@ package ru.etstudio.kuhmeyster.db;
 
 import java.util.Date;
 
-public class Ingredient {
+public final class Ingredient {
 
     private int _id;
 
     private String title;
 
     private Date added;
+
+    public Ingredient() {
+
+    }
 
     public Ingredient(int id, String title) {
         this._id = id;

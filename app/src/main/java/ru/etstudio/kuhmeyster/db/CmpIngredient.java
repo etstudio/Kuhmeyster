@@ -1,7 +1,7 @@
 package ru.etstudio.kuhmeyster.db;
 
 
-public class CmpIngredient {
+public final class CmpIngredient {
 
     private int _id;
 
@@ -12,6 +12,10 @@ public class CmpIngredient {
     private int amount;
 
     private String measure;
+
+    public CmpIngredient() {
+
+    }
 
     public CmpIngredient(int id, int dishId, int ingredientId, int amount, String measure) {
         this._id = id;
