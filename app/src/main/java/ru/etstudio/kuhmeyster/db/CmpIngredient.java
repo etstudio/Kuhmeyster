@@ -1,6 +1,8 @@
 package ru.etstudio.kuhmeyster.db;
 
 
+import android.provider.BaseColumns;
+
 public final class CmpIngredient {
 
     private int _id;
@@ -12,6 +14,19 @@ public final class CmpIngredient {
     private int amount;
 
     private String measure;
+
+    public static final String SQL_CREATE_TABLE = new StringBuffer()
+            .append("CREATE TABLE ")
+            .append(Entry.TABLE_NAME)
+            .append(" (")
+            .append(Entry._ID).append(" INTEGER PRIMARY KEY, ")
+            .append(Entry.COLUMN_DISH_ID).append(" INTEGER, ")
+            .append(Entry.COLUMN_INGREDIENT_ID).append(" INTEGER, ")
+            .append(Entry.COLUMN_AMOUNT).append(" INTEGER, ")
+            .append(Entry.COLUMN_MEASURE).append(" TEXT")
+            .append(")").toString();
+
+    public static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + Entry.TABLE_NAME;
 
     public CmpIngredient() {
 
@@ -70,5 +85,18 @@ public final class CmpIngredient {
 
     public void setMeasure(String measure) {
         this.measure = measure;
+    }
+
+    public static abstract class Entry implements BaseColumns {
+
+        public static final String TABLE_NAME = "cmp_ingredient";
+
+        public static final String COLUMN_DISH_ID = "dish_id";
+
+        public static final String COLUMN_INGREDIENT_ID = "ingredient_id";
+
+        public static final String COLUMN_AMOUNT = "amount";
+
+        public static final String COLUMN_MEASURE = "measure";
     }
 }

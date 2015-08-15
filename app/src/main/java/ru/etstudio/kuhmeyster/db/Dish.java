@@ -10,7 +10,7 @@ public final class Dish {
 
     private long kindId;
 
-    private Date added;
+    private Date createdAt;
 
     private String title;
 
@@ -24,13 +24,13 @@ public final class Dish {
 
     private boolean containsFish;
 
-    public static final String SQL_CREATE_TABLE_DISH = new StringBuffer()
+    public static final String SQL_CREATE_TABLE = new StringBuffer()
             .append("CREATE TABLE ")
             .append(Entry.TABLE_NAME)
             .append(" (")
             .append(Entry._ID).append(" INTEGER PRIMARY KEY, ")
             .append(Entry.COLUMN_KIND_ID).append(" INTEGER, ")
-            .append(Entry.COLUMN_ADD_DATE).append(" INTEGER, ")
+            .append(Entry.COLUMN_CREATED_AT).append(" DATETIME DEFAULT CURRENT_TIMESTAMP, ")
             .append(Entry.COLUMN_TITLE).append(" TEXT, ")
             .append(Entry.COLUMN_COOKING).append(" TEXT, ")
             .append(Entry.COLUMN_EVERYDAY).append(" INTEGER, ")
@@ -60,12 +60,8 @@ public final class Dish {
         this.kindId = kindId;
     }
 
-    public Date getAdded() {
-        return added;
-    }
-
-    public void setAdded(Date added) {
-        this.added = added;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public String getTitle() {
@@ -122,7 +118,7 @@ public final class Dish {
 
         public static final String COLUMN_KIND_ID = "kind_id";
 
-        public static final String COLUMN_ADD_DATE = "add_date";
+        public static final String COLUMN_CREATED_AT = "created_at";
 
         public static final String COLUMN_TITLE = "title";
 

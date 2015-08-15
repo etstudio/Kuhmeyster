@@ -25,13 +25,13 @@ public final class Kind {
         initialKinds.add("Разное");
     }
 
-    public static final String SQL_CREATE_TABLE_KIND = new StringBuffer()
+    public static final String SQL_CREATE_TABLE = new StringBuffer()
             .append("CREATE TABLE ")
             .append(Entry.TABLE_NAME)
             .append(" (")
             .append(Entry._ID).append(" INTEGER PRIMARY KEY, ")
             .append(Entry.COLUMN_KIND).append(" TEXT, ")
-            .append(Entry.COLUMN_ADD_DATE).append(" INTEGER")
+            .append(Entry.COLUMN_CREATED_AT).append(" DATETIME DEFAULT CURRENT_TIMESTAMP")
             .append(")").toString();
 
     public static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + Entry.TABLE_NAME;
@@ -40,21 +40,19 @@ public final class Kind {
 
     private String kind;
 
-    private Date added;
+    private Date createdAt;
 
     public Kind() {
 
     }
 
-    public Kind(int id, String kind, Date added) {
+    public Kind(int id, String kind) {
         this._id = id;
         this.kind = kind;
-        this.added = added;
     }
 
-    public Kind(String kind, Date added) {
+    public Kind(String kind) {
         this.kind = kind;
-        this.added = added;
     }
 
     public int getId() {
@@ -73,12 +71,8 @@ public final class Kind {
         this.kind = kind;
     }
 
-    public Date getAdded() {
-        return added;
-    }
-
-    public void setAdded(Date added) {
-        this.added = added;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     public static abstract class Entry implements BaseColumns {
@@ -87,6 +81,6 @@ public final class Kind {
 
         public static final String COLUMN_KIND = "kind";
 
-        public static final String COLUMN_ADD_DATE = "add_date";
+        public static final String COLUMN_CREATED_AT = "created_at";
     }
 }
