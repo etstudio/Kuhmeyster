@@ -37,9 +37,9 @@ public class SetupInitialData {
                 db.beginTransaction();
                 for (String kind : kinds) {
                     ContentValues values = new ContentValues();
-                    values.put(Kind.Contract.COLUMN_TITLE, kind);
-                    values.put(Kind.Contract.COLUMN_CREATED, new Date().getTime());
-                    db.insert(Kind.Contract.TABLE_NAME, null, values);
+                    values.put(Kind.COLUMN_TITLE, kind);
+                    values.put(Kind.COLUMN_CREATED, new Date().getTime());
+                    db.insert(Kind.TABLE_NAME, null, values);
                     Log.d(LOG_TAG, "insert to kind: " + kind);
                 }
                 db.setTransactionSuccessful();
@@ -63,8 +63,8 @@ public class SetupInitialData {
                 db.beginTransaction();
                 for (String ingredient : ingredients) {
                     ContentValues values = new ContentValues();
-                    values.put(Ingredient.Contract.COLUMN_TITLE, ingredient);
-                    db.insert(Ingredient.Contract.TABLE_NAME, null, values);
+                    values.put(Ingredient.COLUMN_TITLE, ingredient);
+                    db.insert(Ingredient.TABLE_NAME, null, values);
                     Log.d(LOG_TAG, "insert to ingredient: " + ingredient);
                 }
                 db.setTransactionSuccessful();

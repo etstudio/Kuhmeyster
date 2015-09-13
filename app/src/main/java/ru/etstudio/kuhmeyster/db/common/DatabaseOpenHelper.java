@@ -45,15 +45,15 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(Kind.Contract.SQL_CREATE_TABLE);
+        db.execSQL(Kind.SQL_CREATE_TABLE);
         Log.i(LOG_TAG, "KIND table created");
-        db.execSQL(Dish.Contract.SQL_CREATE_TABLE);
+        db.execSQL(Dish.SQL_CREATE_TABLE);
         Log.i(LOG_TAG, "DISH table created");
-        db.execSQL(Recd.Contract.SQL_CREATE_TABLE);
+        db.execSQL(Recd.SQL_CREATE_TABLE);
         Log.i(LOG_TAG, "RECD table created");
-        db.execSQL(Ingredient.Contract.SQL_CREATE_TABLE);
+        db.execSQL(Ingredient.SQL_CREATE_TABLE);
         Log.i(LOG_TAG, "INGREDIENT table created");
-        db.execSQL(CmpIngredient.Contract.SQL_CREATE_TABLE);
+        db.execSQL(CmpIngredient.SQL_CREATE_TABLE);
         Log.i(LOG_TAG, "CMP_INGREDIENT table created");
 
         SetupInitialData initialData = new SetupInitialData(context, db);
