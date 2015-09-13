@@ -70,7 +70,7 @@ public class KindDAO extends DAO<Kind> {
 
     @Override
     public long insert(Kind kind) {
-        long id = hasKind(kind);
+        long id = exist(kind);
 
         if (kind == null) {
             return id;
@@ -128,29 +128,5 @@ public class KindDAO extends DAO<Kind> {
                 db.endTransaction();
             }
         }
-    }
-
-    private long hasKind(Kind kind) {
-        if (kind == null) {
-            return -1;
-        }
-
-        String query = "select _id from %s where %s = %s";
-
-        if (db != null) {
-            Cursor cursor = null;
-            try {
-                cursor = db.rawQuery(String.format(query, Kind.TABLE_NAME, Kind._ID, kind.getId()), null);
-                if (cursor != null && cursor.moveToFirst()) {
-                    return cursor.getLong(cursor.getColumnIndex(Kind._ID));
-                }
-            } catch (SQLiteException e) {
-                Log.e(LOG_TAG, e.getMessage());
-            } finally {
-                CursorHelper.closeCursor(cursor);
-            }
-        }
-
-        return -1;
     }
 }
