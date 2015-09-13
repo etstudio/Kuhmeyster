@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="main_menu">
+        <item>Повседневный столъ</item>
+        <item>Праздничный столъ</item>
+    </string-array>
+
+    <string-array name="second_menu">
+        <item>Постный</item>
+        <item>Не постный</item>
+    </string-array>
+
+    <string-array name="kinds">
+        <item>Салаты</item>
+        <item>Закуски и бутерброды</item>
+        <item>Первые блюда</item>
+        <item>Вторые блюда</item>
+        <item>Рыба и морепродукты</item>
+        <item>Выпечка</item>
+        <item>Несладкая выпечка</item>
+        <item>Блины, оладьи, сырники</item>
+        <item>Торты и пирожные</item>
+        <item>Десерты</item>
+        <item>Напитки</item>
+        <item>Разное</item>
+    </string-array>
+
+    <string-array name="ingredients">
+
+    </string-array>
+</resources>

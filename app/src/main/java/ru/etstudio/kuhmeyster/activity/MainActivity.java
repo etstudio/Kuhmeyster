@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import ru.etstudio.kuhmeyster.R;
-import ru.etstudio.kuhmeyster.db.DatabaseHelper;
-import ru.etstudio.kuhmeyster.db.DatabaseOpenHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,9 +19,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-
-        DatabaseOpenHelper openHelper = new DatabaseOpenHelper(getApplicationContext());
-        DatabaseHelper dbHelper = openHelper.open();
     }
 
     @Override
