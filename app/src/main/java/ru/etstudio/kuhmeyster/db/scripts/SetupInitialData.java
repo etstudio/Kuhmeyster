@@ -51,7 +51,6 @@ public class SetupInitialData {
                 db.endTransaction();
             }
         }
-        Log.e(LOG_TAG, "Kind table fill error : db is null");
     }
 
     public void fillInitialIngredient() {
@@ -76,7 +75,6 @@ public class SetupInitialData {
                 db.endTransaction();
             }
         }
-        Log.e(LOG_TAG, "Ingredient table fill error : db is null");
     }
 
     private void fillInitialDish(SQLiteDatabase db) {

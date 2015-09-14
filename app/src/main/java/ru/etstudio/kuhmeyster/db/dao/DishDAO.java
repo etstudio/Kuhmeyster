@@ -1,6 +1,5 @@
 package ru.etstudio.kuhmeyster.db.dao;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -88,47 +87,8 @@ public class DishDAO extends DAO<Dish> {
     }
 
     @Override
-    public long insert(Dish dish) {
-        long id = exist(dish);
-
-        if (dish == null) {
-            return id;
-        }
-
-        try {
-            if (db != null) {
-                db.beginTransaction();
-
-                ContentValues values = new ContentValues();
-
-                if (id == -1) {
-                    id = db.insert(Dish.TABLE_NAME, null, values);
-                } else {
-                    db.update(Dish.TABLE_NAME, values, Dish._ID + " = ?", new String[]{String.valueOf(dish.getId())});
-                }
-                db.setTransactionSuccessful();
-
-                Log.d(LOG_TAG, "insert to dish: " + dish.getTitle());
-            }
-        } catch (SQLiteException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        } finally {
-            if (db != null) {
-                db.endTransaction();
-            }
-        }
-
-        return id;
-    }
-
-    @Override
     public void update(Dish dish) {
-        insert(dish);
-    }
-
-    @Override
-    public void delete(Dish dish) {
-
+        super.insert(dish);
     }
 
     private Dish getDish(Cursor cursor) {

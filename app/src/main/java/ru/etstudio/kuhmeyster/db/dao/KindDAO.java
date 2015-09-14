@@ -1,6 +1,5 @@
 package ru.etstudio.kuhmeyster.db.dao;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -69,64 +68,7 @@ public class KindDAO extends DAO<Kind> {
     }
 
     @Override
-    public long insert(Kind kind) {
-        long id = exist(kind);
-
-        if (kind == null) {
-            return id;
-        }
-
-        try {
-            if (db != null) {
-                db.beginTransaction();
-
-                ContentValues values = new ContentValues();
-                values.put(Kind.COLUMN_TITLE, kind.getKind());
-                values.put(Kind.COLUMN_CREATED, kind.getCreated().getTime());
-
-                if (id == -1) {
-                    id = db.insert(Kind.TABLE_NAME, null, values);
-                } else {
-                    db.update(Kind.TABLE_NAME, values, Kind._ID + " = ?", new String[]{String.valueOf(kind.getId())});
-                }
-                db.setTransactionSuccessful();
-
-                Log.d(LOG_TAG, "insert to kind: " + kind.getKind());
-            }
-        } catch (SQLiteException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        } finally {
-            if (db != null) {
-                db.endTransaction();
-            }
-        }
-
-        return id;
-    }
-
-    @Override
     public void update(Kind kind) {
-        insert(kind);
-    }
-
-    @Override
-    public void delete(Kind kind) {
-        if (kind == null) {
-            return;
-        }
-
-        try {
-            if (db != null) {
-                db.beginTransaction();
-                db.delete(Kind.TABLE_NAME, Kind._ID + " = ?", new String[]{String.valueOf(kind.getId())});
-                db.setTransactionSuccessful();
-            }
-        } catch (SQLiteException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        } finally {
-            if (db != null) {
-                db.endTransaction();
-            }
-        }
+        super.insert(kind);
     }
 }
