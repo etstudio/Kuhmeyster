@@ -1,5 +1,6 @@
 package ru.etstudio.kuhmeyster.db.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.db.common.CursorHelper;
+import ru.etstudio.kuhmeyster.db.entity.DBContract;
 import ru.etstudio.kuhmeyster.db.entity.Dish;
 import ru.etstudio.kuhmeyster.db.entity.Kind;
 
@@ -87,8 +89,46 @@ public class DishDAO extends DAO<Dish> {
     }
 
     @Override
+    public long insert(Dish dish) {
+        long id = exist(dish);
+
+        if (dish == null) {
+            return id;
+        }
+
+        try {
+            if (db != null) {
+                db.beginTransaction();
+                ContentValues values = new ContentValues();
+                values.put(Dish.COLUMN_TITLE, dish.getTitle());
+                values.put(Dish.COLUMN_CREATED, dish.getCreated().getTime());
+                values.put(Dish.COLUMN_KIND_ID, dish.getKind().getId());
+                values.put(Dish.COLUMN_CELEBRATORY, dish.isCelebratory());
+                values.put(Dish.COLUMN_EVERYDAY, dish.isEveryday());
+                values.put(Dish.COLUMN_LENTEN, dish.isLenten());
+                values.put(Dish.COLUMN_FISH, dish.containsFish());
+                values.put(Dish.COLUMN_COOKING, dish.getCooking());
+                if (id == -1) {
+                    id = db.insert(Dish.TABLE_NAME, null, values);
+                } else {
+                    db.update(Dish.TABLE_NAME, values, DBContract._ID + " = ?", new String[]{String.valueOf(dish.getId())});
+                }
+                db.setTransactionSuccessful();
+            }
+        } catch (SQLiteException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+            }
+        }
+
+        return id;
+    }
+
+    @Override
     public void update(Dish dish) {
-        super.insert(dish);
+        insert(dish);
     }
 
     private Dish getDish(Cursor cursor) {

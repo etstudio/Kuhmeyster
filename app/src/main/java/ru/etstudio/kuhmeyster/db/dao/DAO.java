@@ -1,13 +1,11 @@
 package ru.etstudio.kuhmeyster.db.dao;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.db.common.CursorHelper;
@@ -31,36 +29,7 @@ public abstract class DAO<T extends DBContract> {
 
     public abstract T get(long id);
 
-    public long insert(T object) {
-        long id = exist(object);
-
-        if (object == null) {
-            return id;
-        }
-
-        try {
-            if (db != null) {
-                String tableName = getTableName(object);
-
-                db.beginTransaction();
-                ContentValues values = new ContentValues();
-                if (id == -1) {
-                    id = db.insert(tableName, null, values);
-                } else {
-                    db.update(tableName, values, DBContract._ID + " = ?", new String[]{String.valueOf(object.getId())});
-                }
-                db.setTransactionSuccessful();
-            }
-        } catch (SQLiteException | NoSuchFieldException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        } finally {
-            if (db != null) {
-                db.endTransaction();
-            }
-        }
-
-        return id;
-    }
+    public abstract long insert(T object);
 
     public abstract void update(T object);
 
@@ -77,7 +46,7 @@ public abstract class DAO<T extends DBContract> {
                 db.delete(tableName, DBContract._ID + " = ?", new String[]{String.valueOf(object.getId())});
                 db.setTransactionSuccessful();
             }
-        } catch (SQLiteException | NoSuchFieldException e) {
+        } catch (SQLiteException | NoSuchFieldException | IllegalAccessException e) {
             Log.e(LOG_TAG, e.getMessage());
         } finally {
             if (db != null) {
@@ -107,7 +76,7 @@ public abstract class DAO<T extends DBContract> {
                 if (cursor != null && cursor.moveToFirst()) {
                     return cursor.getLong(cursor.getColumnIndex(DBContract._ID));
                 }
-            } catch (SQLiteException | NoSuchFieldException e) {
+            } catch (SQLiteException | NoSuchFieldException | IllegalAccessException e) {
                 Log.e(LOG_TAG, e.getMessage());
             } finally {
                 CursorHelper.closeCursor(cursor);
@@ -117,9 +86,7 @@ public abstract class DAO<T extends DBContract> {
         return -1;
     }
 
-    private String getTableName(T object) throws NoSuchFieldException {
-        Class<?> tClass = object.getClass();
-        Field tableName = tClass.getField("TABLE_NAME");
-        return tableName.getName();
+    private String getTableName(T object) throws NoSuchFieldException, IllegalAccessException {
+        return object.getClass().getDeclaredField("TABLE_NAME").get(object).toString();
     }
 }

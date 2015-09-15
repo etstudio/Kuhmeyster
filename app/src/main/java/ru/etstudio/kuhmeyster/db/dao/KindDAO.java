@@ -1,5 +1,6 @@
 package ru.etstudio.kuhmeyster.db.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.db.common.CursorHelper;
+import ru.etstudio.kuhmeyster.db.entity.DBContract;
 import ru.etstudio.kuhmeyster.db.entity.Kind;
 
 public class KindDAO extends DAO<Kind> {
@@ -57,7 +59,7 @@ public class KindDAO extends DAO<Kind> {
                     Date created = new Date(cursor.getLong(cursor.getColumnIndex(Kind.COLUMN_CREATED)));
                     return new Kind(id, title, created);
                 }
-            } catch (SQLiteException e) {
+            } catch (Exception e) {
                 Log.e(LOG_TAG, e.getMessage());
             } finally {
                 CursorHelper.closeCursor(cursor);
@@ -68,7 +70,39 @@ public class KindDAO extends DAO<Kind> {
     }
 
     @Override
+    public long insert(Kind kind) {
+        long id = exist(kind);
+
+        if (kind == null) {
+            return id;
+        }
+
+        try {
+            if (db != null) {
+                db.beginTransaction();
+                ContentValues values = new ContentValues();
+                values.put(Kind.COLUMN_CREATED, kind.getCreated().getTime());
+                values.put(Kind.COLUMN_TITLE, kind.getKind());
+                if (id == -1) {
+                    id = db.insert(Kind.TABLE_NAME, null, values);
+                } else {
+                    db.update(Kind.TABLE_NAME, values, DBContract._ID + " = ?", new String[]{String.valueOf(kind.getId())});
+                }
+                db.setTransactionSuccessful();
+            }
+        } catch (SQLiteException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        } finally {
+            if (db != null) {
+                db.endTransaction();
+            }
+        }
+
+        return id;
+    }
+
+    @Override
     public void update(Kind kind) {
-        super.insert(kind);
+        insert(kind);
     }
 }
