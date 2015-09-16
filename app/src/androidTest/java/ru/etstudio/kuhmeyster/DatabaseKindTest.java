@@ -34,14 +34,14 @@ public class DatabaseKindTest extends AndroidTestCase {
         }
     }
 
-    public void testGetKind() {
+    public void testGet() {
         for (int i = 1; i <= 12; i++) {
             Kind kind = kindDAO.get(i);
             assertNotNull(kind);
         }
     }
 
-    public void testInsertKind() {
+    public void testInsert() {
         Kind kind = new Kind("TEST");
         long id = kindDAO.insert(kind);
         assertTrue(id > -1);
@@ -49,7 +49,7 @@ public class DatabaseKindTest extends AndroidTestCase {
         assertNotNull(kind);
     }
 
-    public void testUpdateKind() {
+    public void testUpdate() {
         Kind kind = kindDAO.get(13);
         kind.setKind("TEST_!");
         kindDAO.update(kind);
@@ -57,7 +57,7 @@ public class DatabaseKindTest extends AndroidTestCase {
         assertEquals(kind.getKind(), "TEST_!");
     }
 
-    public void testZDeleteKind() {
+    public void testZDelete() {
         List<Kind> kinds = kindDAO.getAll();
         for (Kind kind : kinds) {
             kindDAO.delete(kind);
