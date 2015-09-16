@@ -21,24 +21,31 @@ public class DishDAO extends DAO<Dish> {
 
     private static final String LOG_TAG = DishDAO.class.getName();
 
-    private StringBuffer sqlGetAllDishes = new StringBuffer()
+    private static final String DISH_ID = "dish_id";
+    private static final String DISH_TITLE = "dish_title";
+    private static final String DISH_CREATED = "dish_created";
+
+    private StringBuffer sqlGetAll = new StringBuffer()
             .append("SELECT ")
-            .append(" d.").append(_ID).append("as dish_id, ")
-            .append(" d.").append(Dish.COLUMN_TITLE).append(" as dish_title, ")
+            .append(" d.").append(_ID).append(" as ").append(DISH_ID).append(", ")
+            .append(" d.").append(Dish.COLUMN_TITLE).append(" as ").append(DISH_TITLE).append(", ")
             .append(" d.").append(Dish.COLUMN_COOKING).append(", ")
-            .append(" d.").append(Dish.COLUMN_CREATED).append("as dish_created, ")
+            .append(" d.").append(Dish.COLUMN_CREATED).append(" as ").append(DISH_CREATED).append(", ")
             .append(" d.").append(Dish.COLUMN_CELEBRATORY).append(", ")
             .append(" d.").append(Dish.COLUMN_EVERYDAY).append(", ")
             .append(" d.").append(Dish.COLUMN_LENTEN).append(", ")
             .append(" d.").append(Dish.COLUMN_FISH).append(", ")
-            .append(" k.").append(_ID).append("as kind_id, ")
+            .append(" k.").append(_ID).append(" as kind_id, ")
             .append(" k.").append(Kind.COLUMN_TITLE).append(" as kind_title, ")
-            .append(" k.").append(Kind.COLUMN_CREATED).append(" as kind_created, ")
+            .append(" k.").append(Kind.COLUMN_CREATED).append(" as kind_created ")
             .append("FROM ").append(Dish.TABLE_NAME).append(" as d ")
             .append("INNER JOIN ").append(Kind.TABLE_NAME).append(" as k ")
             .append("ON ")
             .append("d. ").append(Dish.COLUMN_KIND_ID).append(" = ")
             .append("k.").append(_ID);
+
+    private StringBuffer sqlWhereId = new StringBuffer(sqlGetAll)
+            .append(" where d.").append(_ID).append(" = ?");
 
     public DishDAO(Context context) {
         super(context);
@@ -50,7 +57,7 @@ public class DishDAO extends DAO<Dish> {
         if (db != null) {
             Cursor cursor = null;
             try {
-                cursor = db.rawQuery(sqlGetAllDishes.toString(), null);
+                cursor = db.rawQuery(sqlGetAll.toString(), null);
                 if (cursor != null && cursor.moveToFirst()) {
                     do {
                         Dish dish = getDish(cursor);
@@ -70,12 +77,10 @@ public class DishDAO extends DAO<Dish> {
 
     @Override
     public Dish get(long id) {
-        String query = sqlGetAllDishes.append(" where d._id = ?").toString();
-
         if (db != null) {
             Cursor cursor = null;
             try {
-                cursor = db.rawQuery(query, new String[]{String.valueOf(id)});
+                cursor = db.rawQuery(sqlWhereId.toString(), new String[]{String.valueOf(id)});
                 if (cursor != null && cursor.moveToFirst()) {
                     return getDish(cursor);
                 }
@@ -140,9 +145,9 @@ public class DishDAO extends DAO<Dish> {
 
         try {
             dish = new Dish();
-            dish.setId(cursor.getLong(cursor.getColumnIndex(_ID)));
-            dish.setTitle(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_TITLE)));
-            Date created = new Date(cursor.getLong(cursor.getColumnIndex(Dish.COLUMN_CREATED)));
+            dish.setId(cursor.getLong(cursor.getColumnIndex("dish_id")));
+            dish.setTitle(cursor.getString(cursor.getColumnIndex("dish_title")));
+            Date created = new Date(cursor.getLong(cursor.getColumnIndex("dish_created")));
             dish.setCreated(created);
             dish.setCooking(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_COOKING)));
             boolean celebratory = Boolean.getBoolean(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_CELEBRATORY)));
