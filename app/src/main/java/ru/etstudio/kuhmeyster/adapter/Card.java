@@ -1,21 +1,27 @@
 package ru.etstudio.kuhmeyster.adapter;
 
+import android.graphics.drawable.Drawable;
+
 public class Card {
 
-    private String title;
+    private Drawable image;
 
-    private int imageId;
+    private DishType type;
 
-    public Card(String title, int imageId) {
-        this.title = title;
-        this.imageId = imageId;
+    public Card(DishType type, Drawable image) {
+        this.type = type;
+        this.image = image;
     }
 
     public String getLabel() {
-        return title;
+        return type.getLabel();
     }
 
-    public int getImageId() {
-        return imageId;
+    public Drawable getImage() {
+        return image;
+    }
+
+    public DishType getType() {
+        return type;
     }
 }

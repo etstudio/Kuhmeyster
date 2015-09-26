@@ -136,6 +136,38 @@ public class DishDAO extends DAO<Dish> {
         insert(dish);
     }
 
+    public int getEverydayCount() {
+        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_EVERYDAY + " = 1");
+    }
+
+    public int getCelebratoryCount() {
+        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_CELEBRATORY + " = 1");
+    }
+
+    public int getEverydayLentenCount() {
+        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_EVERYDAY + " = 1 and " + Dish.COLUMN_LENTEN + " = 1");
+    }
+
+    public int getCelebratoryLentenCount() {
+        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_CELEBRATORY + " = 1 and " + Dish.COLUMN_LENTEN + " = 1");
+    }
+
+    private int getCount(String query) {
+        Cursor countCursor = null;
+        try {
+            if (db != null) {
+                countCursor = db.rawQuery(query, null);
+                countCursor.moveToFirst();
+                return countCursor.getInt(0);
+            }
+        } catch (SQLiteException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        } finally {
+            CursorHelper.closeCursor(countCursor);
+        }
+        return 0;
+    }
+
     private Dish getDish(Cursor cursor) {
         Dish dish = null;
 
