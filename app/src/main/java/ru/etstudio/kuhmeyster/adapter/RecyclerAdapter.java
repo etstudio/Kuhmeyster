@@ -1,7 +1,5 @@
 package ru.etstudio.kuhmeyster.adapter;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,22 +11,15 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.R;
-import ru.etstudio.kuhmeyster.db.dao.DishDAO;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> implements View.OnClickListener {
 
     private List<Card> dataSet;
 
-    private DishDAO dishDAO;
-
-    private Context context;
-
     private ICardItemListener itemListener;
 
-    public RecyclerAdapter(Context context, List<Card> dataSet) {
+    public RecyclerAdapter(List<Card> dataSet) {
         this.dataSet = dataSet;
-        this.context = context;
-        dishDAO = new DishDAO(context);
     }
 
     @Override
@@ -42,20 +33,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.getLabel().setText(dataSet.get(i).getLabel());
-        viewHolder.getDishImage().setImageDrawable(dataSet.get(i).getImage());
-        Resources resources = context.getResources();
-
-        if (dataSet.get(i).getType().equals(DishType.EVERYDAY)) {
-            String text = MessageFormat.format(resources.getString(R.string.main_statistic),
-                    dishDAO.getEverydayCount(), dishDAO.getEverydayLentenCount());
-            viewHolder.getStatistic().setText(text);
-
-        } else if (dataSet.get(i).getType().equals(DishType.CELEBRATORY)) {
-            String text = MessageFormat.format(resources.getString(R.string.main_statistic),
-                    dishDAO.getCelebratoryCount(), dishDAO.getCelebratoryLentenCount());
-            viewHolder.getStatistic().setText(text);
-        }
+        Card card = dataSet.get(i);
+        viewHolder.getLabel().setText(card.getLabel());
+        viewHolder.getDishImage().setImageDrawable(card.getImage());
+        String text = MessageFormat.format(card.getStatisticText(), card.getCount(), card.getLentenCount());
+        viewHolder.getStatistic().setText(text);
     }
 
     @Override

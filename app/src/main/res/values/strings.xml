@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">Kuhmeyster</string>
+    <string name="app_name">Кухмейстер</string>
     <string name="cuisine">Стол</string>
     <string name="main_statistic">{0} блюд {1} постных</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Настройки</string>
+    <string name="abc_search_hint">Поиск</string>
+
 </resources>
