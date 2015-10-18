@@ -2,8 +2,14 @@
     <string name="app_name">Кухмейстер</string>
     <string name="cuisine">Стол</string>
     <string name="main_statistic">{0} блюд {1} постных</string>
+    <string name="dish_kinds">Виды блюд</string>
+    <string name="offer">Ваше меню</string>
 
     <string name="action_settings">Настройки</string>
     <string name="abc_search_hint">Поиск</string>
+
+    <string name="loading">Загрузка…</string>
+    <string name="no_kind_data">Нет доступных видов блюд</string>
+    <string name="check_lenten">Выбор из постных блюд</string>
 
 </resources>

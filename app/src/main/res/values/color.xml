@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="activity">#E0E0E0</color>
-    <color name="primary">#ffd8cc</color>
-    <color name="primary_dark">#d67164</color>
-    <color name="primary_light">#ffd8cc</color>
-    <color name="accent">#CDDC39</color>
+    <color name="primary">#e8d8d0</color>
+    <color name="primary_dark">#b49782</color>
+    <color name="primary_light">#f1e1e4</color>
+    <color name="accent">#b49782</color>
     <color name="primary_text">#502828</color>
     <color name="secondary_text">#727272</color>
+    <color name="dish_type_text">#FFFFFF</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
 </resources>

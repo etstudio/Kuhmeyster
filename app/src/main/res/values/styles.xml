@@ -1,11 +1,17 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="searchViewStyle">@style/AppSearchViewStyle</item>
         <item name="android:textColorPrimary">@color/primary_text</item>
+    </style>
+
+    <style name="ListSelectorStyle" parent="AppTheme">
+        <item name="android:background">@drawable/row_selector</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/primary_text</item>
     </style>
 
     <style name="AppSearchViewStyle" parent="Widget.AppCompat.SearchView">

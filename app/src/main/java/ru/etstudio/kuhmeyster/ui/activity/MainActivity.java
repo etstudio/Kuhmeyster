@@ -1,5 +1,6 @@
-package ru.etstudio.kuhmeyster.activity;
+package ru.etstudio.kuhmeyster.ui.activity;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -9,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements ICardItemListener
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.action_search) {
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -73,17 +73,20 @@ public class MainActivity extends AppCompatActivity implements ICardItemListener
     private List<Card> getCards() {
         Resources resources = getResources();
         TypedArray images = resources.obtainTypedArray(R.array.images);
+        String statisticText = resources.getString(R.string.main_statistic);
 
         List<Card> menu = new LinkedList<>();
 
         Card card = new Card(DishType.EVERYDAY, images.getDrawable(0));
         card.setEverydayCount(dishDAO.getEverydayCount());
         card.setEverydayLentenCount(dishDAO.getEverydayLentenCount());
+        card.setStatisticText(statisticText);
         menu.add(card);
 
         card = new Card(DishType.CELEBRATORY, images.getDrawable(1));
         card.setCelebratoryCount(dishDAO.getCelebratoryCount());
         card.setCelebratoryLentenCount(dishDAO.getCelebratoryLentenCount());
+        card.setStatisticText(statisticText);
         menu.add(card);
 
         return menu;
@@ -91,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements ICardItemListener
 
     @Override
     public void onCardItemClick(Card card) {
-        Toast.makeText(this, card.getLabel(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), KindActivity.class);
+        intent.putExtra(Card.class.getCanonicalName(), card);
+        startActivity(intent);
     }
 }

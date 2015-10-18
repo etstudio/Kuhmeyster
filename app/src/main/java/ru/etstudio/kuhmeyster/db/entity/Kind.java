@@ -1,10 +1,13 @@
 package ru.etstudio.kuhmeyster.db.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public final class Kind implements DBContract {
+public final class Kind implements DBContract, Parcelable {
 
     public static final String TABLE_NAME = "kind";
 
@@ -44,6 +47,24 @@ public final class Kind implements DBContract {
         this.created = new Date();
     }
 
+    protected Kind(Parcel in) {
+        _id = in.readLong();
+        kind = in.readString();
+        created = new Date(in.readLong());
+    }
+
+    public static final Creator<Kind> CREATOR = new Creator<Kind>() {
+        @Override
+        public Kind createFromParcel(Parcel in) {
+            return new Kind(in);
+        }
+
+        @Override
+        public Kind[] newArray(int size) {
+            return new Kind[size];
+        }
+    };
+
     @Override
     public long getId() {
         return _id;
@@ -74,5 +95,19 @@ public final class Kind implements DBContract {
             return new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(created);
         }
         return "";
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_id);
+        dest.writeString(kind);
+        if (created != null) {
+            dest.writeLong(created.getTime());
+        }
     }
 }
