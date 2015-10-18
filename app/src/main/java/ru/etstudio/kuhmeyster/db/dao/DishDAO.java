@@ -58,7 +58,7 @@ public class DishDAO extends DAO<Dish> {
             Cursor cursor = null;
             try {
                 cursor = db.rawQuery(sqlGetAll.toString(), null);
-                if (cursor != null && cursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
                     do {
                         Dish dish = getDish(cursor);
                         if (dish != null) {
@@ -81,7 +81,7 @@ public class DishDAO extends DAO<Dish> {
             Cursor cursor = null;
             try {
                 cursor = db.rawQuery(sqlWhereId.toString(), new String[]{String.valueOf(id)});
-                if (cursor != null && cursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
                     return getDish(cursor);
                 }
             } catch (SQLiteException e) {

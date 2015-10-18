@@ -29,7 +29,7 @@ public class KindDAO extends DAO<Kind> {
             Cursor cursor = null;
             try {
                 cursor = db.query(Kind.TABLE_NAME, null, null, null, null, null, null);
-                if (cursor != null && cursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
                     do {
                         long id = cursor.getLong(cursor.getColumnIndex(Kind._ID));
                         Date created = new Date(cursor.getLong(cursor.getColumnIndex(Kind.COLUMN_CREATED)));
@@ -54,7 +54,7 @@ public class KindDAO extends DAO<Kind> {
             Cursor cursor = null;
             try {
                 cursor = db.rawQuery(String.format(query, Kind.TABLE_NAME, Kind._ID, id), null);
-                if (cursor != null && cursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
                     String title = cursor.getString(cursor.getColumnIndex(Kind.COLUMN_TITLE));
                     Date created = new Date(cursor.getLong(cursor.getColumnIndex(Kind.COLUMN_CREATED)));
                     return new Kind(id, title, created);
