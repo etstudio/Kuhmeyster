@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer-array name="images">
-        <item>@drawable/dish_everyday</item>
-        <item>@drawable/dish_celebratory</item>
+
     </integer-array>
 
     <string-array name="kinds">
-        <item>Салаты</item>
-        <item>Закуски и бутерброды</item>
         <item>Первые блюда</item>
         <item>Вторые блюда</item>
-        <item>Рыба и морепродукты</item>
+        <item>Салаты</item>
+        <item>Рыба</item>
+        <item>Закуски и бутерброды</item>
         <item>Выпечка</item>
         <item>Несладкая выпечка</item>
-        <item>Торты и пирожные</item>
         <item>Десерты</item>
         <item>Напитки</item>
         <item>Разное</item>

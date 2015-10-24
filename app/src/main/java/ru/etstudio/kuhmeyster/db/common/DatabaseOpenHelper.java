@@ -63,6 +63,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.delete(Kind.TABLE_NAME, null, null);
+        SetupInitialData initialData = new SetupInitialData(context, db);
+        initialData.fillInitialKind();
     }
 }

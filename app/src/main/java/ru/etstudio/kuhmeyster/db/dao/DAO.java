@@ -86,6 +86,22 @@ public abstract class DAO<T extends DBContract> {
         return -1;
     }
 
+    protected int getCount(String query) {
+        Cursor countCursor = null;
+        try {
+            if (db != null) {
+                countCursor = db.rawQuery(query, null);
+                countCursor.moveToFirst();
+                return countCursor.getInt(0);
+            }
+        } catch (SQLiteException e) {
+            Log.e(LOG_TAG, e.getMessage());
+        } finally {
+            CursorHelper.closeCursor(countCursor);
+        }
+        return 0;
+    }
+
     private String getTableName(T object) throws NoSuchFieldException, IllegalAccessException {
         return object.getClass().getDeclaredField("TABLE_NAME").get(object).toString();
     }

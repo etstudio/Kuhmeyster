@@ -9,9 +9,9 @@ import java.util.Locale;
 
 public final class Kind implements DBContract, Parcelable {
 
-    public static final String TABLE_NAME = "kind";
+    public static final String TABLE_NAME = "label";
 
-    public static final String COLUMN_TITLE = "title";
+    public static final String COLUMN_LABEL = "label";
 
     public static final String COLUMN_CREATED = "created";
 
@@ -20,7 +20,7 @@ public final class Kind implements DBContract, Parcelable {
             .append(TABLE_NAME)
             .append(" (")
             .append(_ID).append(" INTEGER PRIMARY KEY, ")
-            .append(COLUMN_TITLE).append(" TEXT, ")
+            .append(COLUMN_LABEL).append(" TEXT, ")
             .append(COLUMN_CREATED).append(" INTEGER")
             .append(")").toString();
 
@@ -28,7 +28,7 @@ public final class Kind implements DBContract, Parcelable {
 
     private long _id;
 
-    private String kind;
+    private String label;
 
     private Date created;
 
@@ -36,20 +36,20 @@ public final class Kind implements DBContract, Parcelable {
 
     }
 
-    public Kind(long id, String kind, Date created) {
+    public Kind(long id, String label, Date created) {
         this._id = id;
-        this.kind = kind;
+        this.label = label;
         this.created = created;
     }
 
-    public Kind(String kind) {
-        this.kind = kind;
+    public Kind(String label) {
+        this.label = label;
         this.created = new Date();
     }
 
     protected Kind(Parcel in) {
         _id = in.readLong();
-        kind = in.readString();
+        label = in.readString();
         created = new Date(in.readLong());
     }
 
@@ -74,12 +74,12 @@ public final class Kind implements DBContract, Parcelable {
         this._id = id;
     }
 
-    public String getKind() {
-        return kind;
+    public String getLabel() {
+        return label;
     }
 
-    public void setKind(String kind) {
-        this.kind = kind;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Date getCreated() {
@@ -105,7 +105,7 @@ public final class Kind implements DBContract, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(_id);
-        dest.writeString(kind);
+        dest.writeString(label);
         if (created != null) {
             dest.writeLong(created.getTime());
         }

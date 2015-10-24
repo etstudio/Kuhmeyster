@@ -51,10 +51,10 @@ public class DatabaseKindTest extends AndroidTestCase {
 
     public void testUpdate() {
         Kind kind = kindDAO.get(13);
-        kind.setKind("TEST_!");
+        kind.setLabel("TEST_!");
         kindDAO.update(kind);
         kind = kindDAO.get(13);
-        assertEquals(kind.getKind(), "TEST_!");
+        assertEquals(kind.getLabel(), "TEST_!");
     }
 
     public void testZDelete() {

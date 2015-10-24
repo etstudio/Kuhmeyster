@@ -18,13 +18,8 @@
         </activity>
 
         <activity
-            android:name=".ui.activity.KindActivity"
-            android:label="@string/dish_kinds">
+            android:name=".ui.activity.DishesActivity">
         </activity>
-
-        <activity
-            android:name=".ui.activity.OfferActivity"
-            android:label="@string/offer"></activity>
 
     </application>
 

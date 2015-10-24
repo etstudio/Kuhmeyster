@@ -5,23 +5,32 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.R;
 import ru.etstudio.kuhmeyster.adapter.Card;
-import ru.etstudio.kuhmeyster.adapter.DishType;
+import ru.etstudio.kuhmeyster.adapter.CardAdapter;
+import ru.etstudio.kuhmeyster.adapter.CardChoiceMode;
 import ru.etstudio.kuhmeyster.adapter.ICardItemListener;
-import ru.etstudio.kuhmeyster.adapter.RecyclerAdapter;
 import ru.etstudio.kuhmeyster.db.dao.DishDAO;
+import ru.etstudio.kuhmeyster.db.dao.KindDAO;
+import ru.etstudio.kuhmeyster.db.entity.Kind;
 
-public class MainActivity extends AppCompatActivity implements ICardItemListener {
+public class MainActivity extends AppCompatActivity implements ICardItemListener, View.OnClickListener {
+
+    private static final String LOG_TAG = MainActivity.class.getName();
+
+    private KindDAO kindDAO;
 
     private DishDAO dishDAO;
 
@@ -29,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements ICardItemListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        kindDAO = new KindDAO(getApplicationContext());
         dishDAO = new DishDAO(getApplicationContext());
         initializeComponents();
     }
@@ -55,47 +65,63 @@ public class MainActivity extends AppCompatActivity implements ICardItemListener
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onCardClick(Card card) {
+        System.out.print(card.getKind().getLabel());
+    }
+
+    @Override
+    public void onCardLongClick(Card card) {
+        if (card != null) {
+            Intent dishesIntent = new Intent(getApplicationContext(), DishesActivity.class);
+            dishesIntent.putExtra(Card.class.getCanonicalName(), card);
+            startActivity(dishesIntent);
+        }
+    }
+
+    @Override
+    public void onCardSelected(List<Card> cards) {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
     private void initializeComponents() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView recyclerMainMenu = (RecyclerView) findViewById(R.id.main_menu_recycler);
+        RecyclerView recyclerMainMenu = (RecyclerView) findViewById(R.id.main_menu);
         recyclerMainMenu.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
         recyclerMainMenu.setLayoutManager(layoutManager);
 
         List<Card> menuDataSet = getCards();
-        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(menuDataSet);
-        recyclerAdapter.setItemListener(this);
-        recyclerMainMenu.setAdapter(recyclerAdapter);
+        CardAdapter cardAdapter = new CardAdapter(this, menuDataSet);
+        cardAdapter.setChoiceMode(CardChoiceMode.MULTISELECT);
+        recyclerMainMenu.setAdapter(cardAdapter);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_next);
+        fab.attachToRecyclerView(recyclerMainMenu);
+        fab.setOnClickListener(this);
     }
 
     private List<Card> getCards() {
         Resources resources = getResources();
         TypedArray images = resources.obtainTypedArray(R.array.images);
-        String statisticText = resources.getString(R.string.main_statistic);
 
         List<Card> menu = new LinkedList<>();
-
-        Card card = new Card(DishType.EVERYDAY, images.getDrawable(0));
-        card.setEverydayCount(dishDAO.getEverydayCount());
-        card.setEverydayLentenCount(dishDAO.getEverydayLentenCount());
-        card.setStatisticText(statisticText);
-        menu.add(card);
-
-        card = new Card(DishType.CELEBRATORY, images.getDrawable(1));
-        card.setCelebratoryCount(dishDAO.getCelebratoryCount());
-        card.setCelebratoryLentenCount(dishDAO.getCelebratoryLentenCount());
-        card.setStatisticText(statisticText);
-        menu.add(card);
-
+        List<Kind> kinds = kindDAO.getAll();
+        for (Kind kind : kinds) {
+            Card card = Card.newBulder()
+                    .setKind(kind)
+                    .setImage(null)
+                    .setDishCount(dishDAO.getCountForKind(kind))
+                    .build();
+            menu.add(card);
+        }
         return menu;
-    }
-
-    @Override
-    public void onCardItemClick(Card card) {
-        Intent intent = new Intent(getApplicationContext(), KindActivity.class);
-        intent.putExtra(Card.class.getCanonicalName(), card);
-        startActivity(intent);
     }
 }

@@ -37,7 +37,7 @@ public class SetupInitialData {
                 db.beginTransaction();
                 for (String kind : kinds) {
                     ContentValues values = new ContentValues();
-                    values.put(Kind.COLUMN_TITLE, kind);
+                    values.put(Kind.COLUMN_LABEL, kind);
                     values.put(Kind.COLUMN_CREATED, new Date().getTime());
                     db.insert(Kind.TABLE_NAME, null, values);
                     Log.d(LOG_TAG, "insert to kind: " + kind);

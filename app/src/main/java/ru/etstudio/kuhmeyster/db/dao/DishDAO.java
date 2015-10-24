@@ -36,7 +36,7 @@ public class DishDAO extends DAO<Dish> {
             .append(" d.").append(Dish.COLUMN_LENTEN).append(", ")
             .append(" d.").append(Dish.COLUMN_FISH).append(", ")
             .append(" k.").append(_ID).append(" as kind_id, ")
-            .append(" k.").append(Kind.COLUMN_TITLE).append(" as kind_title, ")
+            .append(" k.").append(Kind.COLUMN_LABEL).append(" as kind_label, ")
             .append(" k.").append(Kind.COLUMN_CREATED).append(" as kind_created ")
             .append("FROM ").append(Dish.TABLE_NAME).append(" as d ")
             .append("INNER JOIN ").append(Kind.TABLE_NAME).append(" as k ")
@@ -44,8 +44,11 @@ public class DishDAO extends DAO<Dish> {
             .append("d. ").append(Dish.COLUMN_KIND_ID).append(" = ")
             .append("k.").append(_ID);
 
-    private StringBuffer sqlWhereId = new StringBuffer(sqlGetAll)
+    private StringBuffer sqlWhereId = new StringBuffer()
             .append(" where d.").append(_ID).append(" = ?");
+
+    private StringBuffer sqlWhereKindId = new StringBuffer()
+            .append(" where k.").append(_ID).append(" = ?");
 
     public DishDAO(Context context) {
         super(context);
@@ -80,7 +83,8 @@ public class DishDAO extends DAO<Dish> {
         if (db != null) {
             Cursor cursor = null;
             try {
-                cursor = db.rawQuery(sqlWhereId.toString(), new String[]{String.valueOf(id)});
+                StringBuffer query = new StringBuffer(sqlGetAll).append(sqlWhereId);
+                cursor = db.rawQuery(query.toString(), new String[]{String.valueOf(id)});
                 if (cursor.moveToFirst()) {
                     return getDish(cursor);
                 }
@@ -136,6 +140,38 @@ public class DishDAO extends DAO<Dish> {
         insert(dish);
     }
 
+    public List<Dish> getFor(Kind kind) {
+        List<Dish> dishes = new ArrayList<>();
+        if (db != null) {
+            Cursor cursor = null;
+            try {
+                StringBuffer query = new StringBuffer(sqlGetAll).append(sqlWhereKindId);
+                cursor = db.rawQuery(query.toString(), new String[]{String.valueOf(kind.getId())});
+                if (cursor.moveToFirst()) {
+                    do {
+                        Dish dish = getDish(cursor);
+                        if (dish != null) {
+                            dishes.add(dish);
+                        }
+                    } while (cursor.moveToNext());
+                }
+            } catch (SQLiteException e) {
+                Log.e(LOG_TAG, e.getMessage());
+            } finally {
+                CursorHelper.closeCursor(cursor);
+            }
+        }
+        return dishes;
+    }
+
+    public int getCountForKind(Kind kind) {
+        if (kind == null) {
+            return 0;
+        }
+
+        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_KIND_ID + " =" + kind.getId());
+    }
+
     public int getEverydayCount() {
         return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_EVERYDAY + " = 1");
     }
@@ -150,22 +186,6 @@ public class DishDAO extends DAO<Dish> {
 
     public int getCelebratoryLentenCount() {
         return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_CELEBRATORY + " = 1 and " + Dish.COLUMN_LENTEN + " = 1");
-    }
-
-    private int getCount(String query) {
-        Cursor countCursor = null;
-        try {
-            if (db != null) {
-                countCursor = db.rawQuery(query, null);
-                countCursor.moveToFirst();
-                return countCursor.getInt(0);
-            }
-        } catch (SQLiteException e) {
-            Log.e(LOG_TAG, e.getMessage());
-        } finally {
-            CursorHelper.closeCursor(countCursor);
-        }
-        return 0;
     }
 
     private Dish getDish(Cursor cursor) {
@@ -193,7 +213,7 @@ public class DishDAO extends DAO<Dish> {
 
             Kind kind = new Kind();
             kind.setId(cursor.getLong(cursor.getColumnIndex("kind_id")));
-            kind.setKind(cursor.getString(cursor.getColumnIndex("kind_title")));
+            kind.setLabel(cursor.getString(cursor.getColumnIndex("kind_label")));
             Date kindCreated = new Date(cursor.getLong(cursor.getColumnIndex("kind_created")));
             kind.setCreated(kindCreated);
             dish.setKind(kind);
