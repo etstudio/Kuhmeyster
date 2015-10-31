@@ -20,9 +20,8 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishHolder> im
 
     private final IDishItemListener callback;
 
-    public DishAdapter(IDishItemListener listener, List<Dish> dishes) {
+    public DishAdapter(IDishItemListener listener) {
         this.callback = listener;
-        this.dishes = dishes;
     }
 
     @Override
@@ -53,6 +52,10 @@ public class DishAdapter extends RecyclerView.Adapter<DishAdapter.DishHolder> im
                 callback.onClick(dishes.get(dishHolder.getPos()));
             }
         }
+    }
+
+    public void setData(List<Dish> dishes) {
+        this.dishes = dishes;
     }
 
     public static class DishHolder extends RecyclerView.ViewHolder {

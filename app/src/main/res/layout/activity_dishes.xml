@@ -13,8 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        
+        <TextView
+            android:id="@+id/load_dishes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Загрузка"/>
+        
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/main_menu"
+            android:id="@+id/dishes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="2dp"

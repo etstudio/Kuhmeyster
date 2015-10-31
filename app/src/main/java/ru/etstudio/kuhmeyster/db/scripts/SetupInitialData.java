@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.R;
+import ru.etstudio.kuhmeyster.db.entity.Dish;
 import ru.etstudio.kuhmeyster.db.entity.Ingredient;
 import ru.etstudio.kuhmeyster.db.entity.Kind;
 
@@ -77,7 +78,30 @@ public class SetupInitialData {
         }
     }
 
-    private void fillInitialDish(SQLiteDatabase db) {
-        //TODO дополнительно заполнить таблицу соединений блюд и ингредиентов
+    public void fillInitialDish() {
+        String cooking = "Салатные листья замочить в холодной воде на 1 час, чтобы они стали свежими и хрустящими.\n" +
+                "Белый хлеб очистить от корочки и порезать на кубики размером примерно 1 сантиметр, затем выложить на противень и подсушить в не слишком горячей духовке.\n" +
+                "В глубокую сковороду налить растительное масло, положить измельченный чеснок. Как только кусочки потемнеют, снять их со сковороды и выложить в масло сухарики. Обжарить до золотистой корочки, выложить на бумажную салфетку для удаления лишнего масла.\n" +
+                "Куриное филе натереть солью и обжарить до готовности, затем остудить и порезать тонкими пластинками.\n" +
+                "Листья салата порвать руками, сыр нарезать тонкими пластинками. Помидоры черри разрезать на четыре части.\n" +
+                "Выложить в салатник все ингредиенты, слегка встряхнуть, чтобы они перемешались, и сразу же подать на стол. Майонез подать отдельно, чтобы каждый едок мог добавлять его по вкусу.";
+        if (db != null) {
+            try {
+                db.beginTransaction();
+                ContentValues values = new ContentValues();
+                values.put(Dish.COLUMN_TITLE, "Салат \"Цезарь\" с курицей и сухариками");
+                values.put(Dish.COLUMN_COOKING, cooking);
+                values.put(Dish.COLUMN_CELEBRATORY, true);
+                values.put(Dish.COLUMN_KIND_ID, 3);
+                db.insert(Dish.TABLE_NAME, null, values);
+                db.setTransactionSuccessful();
+
+                Log.i(LOG_TAG, "Dish table filled");
+            } catch (SQLiteException e) {
+                Log.e(LOG_TAG, e.getMessage());
+            } finally {
+                db.endTransaction();
+            }
+        }
     }
 }

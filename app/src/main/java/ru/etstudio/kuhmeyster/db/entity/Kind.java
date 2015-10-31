@@ -9,7 +9,7 @@ import java.util.Locale;
 
 public final class Kind implements DBContract, Parcelable {
 
-    public static final String TABLE_NAME = "label";
+    public static final String TABLE_NAME = "kind";
 
     public static final String COLUMN_LABEL = "label";
 

@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements ICardItemListener
 
         RecyclerView recyclerMainMenu = (RecyclerView) findViewById(R.id.main_menu);
         recyclerMainMenu.setHasFixedSize(true);
+        recyclerMainMenu.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
         recyclerMainMenu.setLayoutManager(layoutManager);
 
