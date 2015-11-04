@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.db.common.CursorHelper;
@@ -31,10 +30,11 @@ public class KindDAO extends DAO<Kind> {
                 cursor = db.query(Kind.TABLE_NAME, null, null, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     do {
-                        long id = cursor.getLong(cursor.getColumnIndex(Kind._ID));
-                        Date created = new Date(cursor.getLong(cursor.getColumnIndex(Kind.COLUMN_CREATED)));
-                        String title = cursor.getString(cursor.getColumnIndex(Kind.COLUMN_LABEL));
-                        kinds.add(new Kind(id, title, created));
+                        Kind.Builder builder = Kind.newBuilder()
+                                .setId(cursor.getLong(cursor.getColumnIndex(Kind._ID)))
+                                .setCreated(cursor.getLong(cursor.getColumnIndex(Kind.COLUMN_CREATED)))
+                                .setLabel(cursor.getString(cursor.getColumnIndex(Kind.COLUMN_LABEL)));
+                        kinds.add(builder.build());
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
@@ -55,9 +55,11 @@ public class KindDAO extends DAO<Kind> {
             try {
                 cursor = db.rawQuery(String.format(query, Kind.TABLE_NAME, Kind._ID, id), null);
                 if (cursor.moveToFirst()) {
-                    String title = cursor.getString(cursor.getColumnIndex(Kind.COLUMN_LABEL));
-                    Date created = new Date(cursor.getLong(cursor.getColumnIndex(Kind.COLUMN_CREATED)));
-                    return new Kind(id, title, created);
+                    Kind.Builder builder = Kind.newBuilder()
+                            .setId(id)
+                            .setCreated(cursor.getLong(cursor.getColumnIndex(Kind.COLUMN_CREATED)))
+                            .setLabel(cursor.getString(cursor.getColumnIndex(Kind.COLUMN_LABEL)));
+                    return builder.build();
                 }
             } catch (Exception e) {
                 Log.e(LOG_TAG, e.getMessage());

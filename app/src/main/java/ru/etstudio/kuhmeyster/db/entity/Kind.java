@@ -32,25 +32,18 @@ public final class Kind implements DBContract, Parcelable {
 
     private Date created;
 
-    public Kind() {
+    private Kind() {
 
-    }
-
-    public Kind(long id, String label, Date created) {
-        this._id = id;
-        this.label = label;
-        this.created = created;
-    }
-
-    public Kind(String label) {
-        this.label = label;
-        this.created = new Date();
     }
 
     protected Kind(Parcel in) {
         _id = in.readLong();
         label = in.readString();
         created = new Date(in.readLong());
+    }
+
+    public static Builder newBuilder() {
+        return new Kind().new Builder();
     }
 
     public static final Creator<Kind> CREATOR = new Creator<Kind>() {
@@ -70,24 +63,12 @@ public final class Kind implements DBContract, Parcelable {
         return _id;
     }
 
-    public void setId(long id) {
-        this._id = id;
-    }
-
     public String getLabel() {
         return label;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public Date getCreated() {
         return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
     }
 
     public String getFormattedCreated() {
@@ -108,6 +89,32 @@ public final class Kind implements DBContract, Parcelable {
         dest.writeString(label);
         if (created != null) {
             dest.writeLong(created.getTime());
+        }
+    }
+
+    public class Builder {
+
+        private Builder() {
+
+        }
+
+        public Builder setId(long id) {
+            Kind.this._id = id;
+            return this;
+        }
+
+        public Builder setLabel(String label) {
+            Kind.this.label = label;
+            return this;
+        }
+
+        public Builder setCreated(long time) {
+            Kind.this.created = new Date(time);
+            return this;
+        }
+
+        public Kind build() {
+            return Kind.this;
         }
     }
 }

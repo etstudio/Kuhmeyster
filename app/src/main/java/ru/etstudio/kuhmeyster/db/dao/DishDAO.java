@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import ru.etstudio.kuhmeyster.db.common.CursorHelper;
@@ -35,6 +34,7 @@ public class DishDAO extends DAO<Dish> {
             .append(" d.").append(Dish.COLUMN_EVERYDAY).append(", ")
             .append(" d.").append(Dish.COLUMN_LENTEN).append(", ")
             .append(" d.").append(Dish.COLUMN_FISH).append(", ")
+            .append(" d.").append(Dish.COLUMN_LAST_COOKING).append(", ")
             .append(" k.").append(_ID).append(" as kind_id, ")
             .append(" k.").append(Kind.COLUMN_LABEL).append(" as kind_label, ")
             .append(" k.").append(Kind.COLUMN_CREATED).append(" as kind_created ")
@@ -63,7 +63,7 @@ public class DishDAO extends DAO<Dish> {
                 cursor = db.rawQuery(sqlGetAll.toString(), null);
                 if (cursor.moveToFirst()) {
                     do {
-                        Dish dish = getDish(cursor);
+                        Dish dish = createDish(cursor);
                         if (dish != null) {
                             dishes.add(dish);
                         }
@@ -86,7 +86,7 @@ public class DishDAO extends DAO<Dish> {
                 StringBuffer query = new StringBuffer(sqlGetAll).append(sqlWhereId);
                 cursor = db.rawQuery(query.toString(), new String[]{String.valueOf(id)});
                 if (cursor.moveToFirst()) {
-                    return getDish(cursor);
+                    return createDish(cursor);
                 }
             } catch (SQLiteException e) {
                 Log.e(LOG_TAG, e.getMessage());
@@ -149,7 +149,7 @@ public class DishDAO extends DAO<Dish> {
                 cursor = db.rawQuery(query.toString(), new String[]{String.valueOf(kind.getId())});
                 if (cursor.moveToFirst()) {
                     do {
-                        Dish dish = getDish(cursor);
+                        Dish dish = createDish(cursor);
                         if (dish != null) {
                             dishes.add(dish);
                         }
@@ -172,56 +172,34 @@ public class DishDAO extends DAO<Dish> {
         return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_KIND_ID + " =" + kind.getId());
     }
 
-    public int getEverydayCount() {
-        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_EVERYDAY + " = 1");
-    }
-
-    public int getCelebratoryCount() {
-        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_CELEBRATORY + " = 1");
-    }
-
-    public int getEverydayLentenCount() {
-        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_EVERYDAY + " = 1 and " + Dish.COLUMN_LENTEN + " = 1");
-    }
-
-    public int getCelebratoryLentenCount() {
-        return getCount("select count(*) from " + Dish.TABLE_NAME + " where " + Dish.COLUMN_CELEBRATORY + " = 1 and " + Dish.COLUMN_LENTEN + " = 1");
-    }
-
-    private Dish getDish(Cursor cursor) {
-        Dish dish = null;
-
+    private Dish createDish(Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return null;
         }
 
+        Dish.Builder builder = Dish.newBuilder();
         try {
-            dish = new Dish();
-            dish.setId(cursor.getLong(cursor.getColumnIndex("dish_id")));
-            dish.setTitle(cursor.getString(cursor.getColumnIndex("dish_title")));
-            Date created = new Date(cursor.getLong(cursor.getColumnIndex("dish_created")));
-            dish.setCreated(created);
-            dish.setCooking(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_COOKING)));
-            boolean celebratory = Boolean.getBoolean(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_CELEBRATORY)));
-            dish.setCelebratory(celebratory);
-            boolean everyday = Boolean.getBoolean(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_EVERYDAY)));
-            dish.setEveryday(everyday);
-            boolean lenten = Boolean.getBoolean(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_LENTEN)));
-            dish.setLenten(lenten);
-            boolean fish = Boolean.getBoolean(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_FISH)));
-            dish.setContainsFish(fish);
+            builder.setId(cursor.getLong(cursor.getColumnIndex("dish_id")))
+                    .setTitle(cursor.getString(cursor.getColumnIndex("dish_title")))
+                    .setCreated(cursor.getLong(cursor.getColumnIndex("dish_created")))
+                    .setCooking(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_COOKING)))
+                    .setCelebratory(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_CELEBRATORY)))
+                    .setEveryday(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_EVERYDAY)))
+                    .setLenten(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_LENTEN)))
+                    .setFish(cursor.getString(cursor.getColumnIndex(Dish.COLUMN_FISH)))
+                    .setLastCooking(cursor.getLong(cursor.getColumnIndex(Dish.COLUMN_LAST_COOKING)));
 
-            Kind kind = new Kind();
-            kind.setId(cursor.getLong(cursor.getColumnIndex("kind_id")));
-            kind.setLabel(cursor.getString(cursor.getColumnIndex("kind_label")));
-            Date kindCreated = new Date(cursor.getLong(cursor.getColumnIndex("kind_created")));
-            kind.setCreated(kindCreated);
-            dish.setKind(kind);
+            Kind.Builder kindBuilder = Kind.newBuilder()
+                    .setId(cursor.getLong(cursor.getColumnIndex("kind_id")))
+                    .setCreated(cursor.getLong(cursor.getColumnIndex("kind_created")))
+                    .setLabel(cursor.getString(cursor.getColumnIndex("kind_label")));
+
+            builder.setKind(kindBuilder.build());
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }
 
-        return dish;
+        return builder.build();
     }
 
 

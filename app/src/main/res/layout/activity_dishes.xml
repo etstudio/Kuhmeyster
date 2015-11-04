@@ -13,13 +13,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        
-        <TextView
-            android:id="@+id/load_dishes"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Загрузка"/>
-        
+        <RelativeLayout
+            android:id="@+id/load_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal|center_vertical">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical" />
+
+            <TextView
+                android:id="@+id/result_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/progress_bar"
+                android:text="@string/no_data"
+                android:textColor="@color/primary_text" />
+        </RelativeLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/dishes"
             android:layout_width="match_parent"

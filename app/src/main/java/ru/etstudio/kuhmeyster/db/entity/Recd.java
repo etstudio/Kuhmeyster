@@ -1,8 +1,12 @@
 package ru.etstudio.kuhmeyster.db.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
-public final class Recd implements DBContract {
+@Deprecated
+public final class Recd implements DBContract, Parcelable {
 
     public static final String TABLE_NAME = "recd";
 
@@ -27,37 +31,50 @@ public final class Recd implements DBContract {
 
     private Date lastCooking;
 
-    public Recd() {
+    private Recd() {
 
     }
 
-    public Recd(long id, Dish dish) {
-        this._id = id;
-        this.dish = dish;
+    protected Recd(Parcel in) {
+        _id = in.readLong();
+        dish = in.readParcelable(Dish.class.getClassLoader());
+        lastCooking = new Date(in.readLong());
     }
 
-    public Recd(Dish dish) {
-        this.dish = dish;
-    }
+    public static final Creator<Recd> CREATOR = new Creator<Recd>() {
+        @Override
+        public Recd createFromParcel(Parcel in) {
+            return new Recd(in);
+        }
+
+        @Override
+        public Recd[] newArray(int size) {
+            return new Recd[size];
+        }
+    };
 
     @Override
     public long getId() {
         return _id;
     }
 
-    public void setId(long id) {
-        this._id = id;
-    }
-
     public Dish getDish() {
         return dish;
     }
 
-    public void setDish(Dish dish) {
-        this.dish = dish;
-    }
-
     public Date getLastCooking() {
         return lastCooking;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_id);
+        dest.writeParcelable(dish, flags);
+        dest.writeLong(lastCooking.getTime());
     }
 }

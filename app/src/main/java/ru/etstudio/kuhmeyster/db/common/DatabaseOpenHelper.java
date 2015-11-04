@@ -49,8 +49,6 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
         Log.i(LOG_TAG, "KIND table created");
         db.execSQL(Dish.SQL_CREATE_TABLE);
         Log.i(LOG_TAG, "DISH table created");
-        db.execSQL(Recd.SQL_CREATE_TABLE);
-        Log.i(LOG_TAG, "RECD table created");
         db.execSQL(Ingredient.SQL_CREATE_TABLE);
         Log.i(LOG_TAG, "INGREDIENT table created");
         db.execSQL(CmpIngredient.SQL_CREATE_TABLE);

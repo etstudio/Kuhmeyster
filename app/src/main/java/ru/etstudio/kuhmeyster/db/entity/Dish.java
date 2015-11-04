@@ -1,8 +1,13 @@
 package ru.etstudio.kuhmeyster.db.entity;
 
-import java.util.Date;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public final class Dish implements DBContract {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+public final class Dish implements DBContract, Parcelable {
 
     public static final String TABLE_NAME = "dish";
 
@@ -22,6 +27,8 @@ public final class Dish implements DBContract {
 
     public static final String COLUMN_FISH = "fish";
 
+    public static final String COLUMN_LAST_COOKING = "last_cooking";
+
     public static final String SQL_CREATE_TABLE = new StringBuffer()
             .append("CREATE TABLE ")
             .append(TABLE_NAME)
@@ -34,7 +41,8 @@ public final class Dish implements DBContract {
             .append(COLUMN_EVERYDAY).append(" INTEGER, ")
             .append(COLUMN_LENTEN).append(" INTEGER, ")
             .append(COLUMN_CELEBRATORY).append(" INTEGER, ")
-            .append(COLUMN_FISH).append(" INTEGER")
+            .append(COLUMN_FISH).append(" INTEGER, ")
+            .append(COLUMN_LAST_COOKING).append(" DATETIME ")
             .append(")").toString();
 
     public static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + TABLE_NAME;
@@ -57,79 +65,173 @@ public final class Dish implements DBContract {
 
     private boolean containsFish;
 
-    public Dish() {
+    private Date lastCooking;
+
+    private Dish() {
     }
+
+    protected Dish(Parcel in) {
+        _id = in.readLong();
+        kind = in.readParcelable(Kind.class.getClassLoader());
+        created = new Date(in.readLong());
+        title = in.readString();
+        cooking = in.readString();
+        everyday = in.readByte() != 0;
+        lenten = in.readByte() != 0;
+        celebratory = in.readByte() != 0;
+        containsFish = in.readByte() != 0;
+        long lastCookingTimestamp = in.readLong();
+        if (lastCookingTimestamp > 0) {
+            lastCooking = new Date(lastCookingTimestamp);
+        }
+    }
+
+    public static Builder newBuilder() {
+        return new Dish().new Builder();
+    }
+
+    public static final Creator<Dish> CREATOR = new Creator<Dish>() {
+        @Override
+        public Dish createFromParcel(Parcel in) {
+            return new Dish(in);
+        }
+
+        @Override
+        public Dish[] newArray(int size) {
+            return new Dish[size];
+        }
+    };
 
     @Override
     public long getId() {
         return _id;
     }
 
-    public void setId(long id) {
-        this._id = id;
-    }
-
     public Kind getKind() {
         return kind;
-    }
-
-    public void setKind(Kind kind) {
-        this.kind = kind;
     }
 
     public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getCooking() {
         return cooking;
     }
 
-    public void setCooking(String cooking) {
-        this.cooking = cooking;
-    }
-
     public boolean isEveryday() {
         return everyday;
-    }
-
-    public void setEveryday(boolean everyday) {
-        this.everyday = everyday;
     }
 
     public boolean isLenten() {
         return lenten;
     }
 
-    public void setLenten(boolean lenten) {
-        this.lenten = lenten;
-    }
-
     public boolean isCelebratory() {
         return celebratory;
-    }
-
-    public void setCelebratory(boolean celebratory) {
-        this.celebratory = celebratory;
     }
 
     public boolean containsFish() {
         return containsFish;
     }
 
-    public void setContainsFish(boolean containsFish) {
-        this.containsFish = containsFish;
+    public Date getLastCooking() {
+        return lastCooking;
+    }
+
+    public String getFormattedLastCooking() {
+        if (lastCooking != null) {
+            return new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(lastCooking);
+        }
+        return "";
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_id);
+        dest.writeParcelable(kind, flags);
+        dest.writeLong(created.getTime());
+        dest.writeString(title);
+        dest.writeString(cooking);
+        dest.writeByte((byte) (everyday ? 1 : 0));
+        dest.writeByte((byte) (lenten ? 1 : 0));
+        dest.writeByte((byte) (celebratory ? 1 : 0));
+        dest.writeByte((byte) (containsFish ? 1 : 0));
+        if (lastCooking != null) {
+            dest.writeLong(lastCooking.getTime());
+        }
+    }
+
+    public class Builder {
+
+        private Builder() {
+
+        }
+
+        public Builder setId(long id) {
+            Dish.this._id = id;
+            return this;
+        }
+
+        public Builder setKind(Kind kind) {
+            Dish.this.kind = kind;
+            return this;
+        }
+
+        public Builder setCreated(long time) {
+            Dish.this.created = new Date(time);
+            return this;
+        }
+
+        public Builder setTitle(String title) {
+            Dish.this.title = title;
+            return this;
+        }
+
+        public Builder setCooking(String cooking) {
+            Dish.this.cooking = cooking;
+            return this;
+        }
+
+        public Builder setEveryday(String everyday) {
+            Dish.this.everyday = Boolean.getBoolean(everyday);
+            return this;
+        }
+
+        public Builder setLenten(String lenten) {
+            Dish.this.lenten = Boolean.getBoolean(lenten);
+            return this;
+        }
+
+        public Builder setCelebratory(String celebratory) {
+            Dish.this.celebratory = Boolean.getBoolean(celebratory);
+            return this;
+        }
+
+        public Builder setFish(String containsFish) {
+            Dish.this.containsFish = Boolean.getBoolean(containsFish);
+            return this;
+        }
+
+        public Builder setLastCooking(long time) {
+            Dish.this.lastCooking = null;
+            if (time > 0) {
+                Dish.this.lastCooking = new Date(time);
+            }
+            return this;
+        }
+
+        public Dish build() {
+            return Dish.this;
+        }
     }
 }

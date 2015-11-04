@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
@@ -21,7 +23,6 @@ import ru.etstudio.kuhmeyster.R;
 import ru.etstudio.kuhmeyster.adapter.Card;
 import ru.etstudio.kuhmeyster.adapter.DishAdapter;
 import ru.etstudio.kuhmeyster.adapter.IDishItemListener;
-import ru.etstudio.kuhmeyster.db.dao.DishDAO;
 import ru.etstudio.kuhmeyster.db.entity.Dish;
 import ru.etstudio.kuhmeyster.loader.DishesLoader;
 
@@ -30,11 +31,9 @@ public class DishesActivity extends AppCompatActivity implements View.OnClickLis
 
     private static final String LOG_TAG = DishesActivity.class.getName();
 
+    private RecyclerView recycler;
+
     private DishAdapter adapter;
-
-    private RecyclerView recyclerDishes;
-
-    private DishDAO dishDAO;
 
     private Card card;
 
@@ -42,12 +41,12 @@ public class DishesActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dishes);
-        dishDAO = new DishDAO(getApplicationContext());
 
         initializeExtras();
         initializeComponents();
 
-        getLoaderManager().initLoader(7, null, this);
+        getLoaderManager().initLoader(0, null, this).forceLoad();
+        loading(true, 0);
     }
 
     @Override
@@ -80,13 +79,14 @@ public class DishesActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onLoadFinished(Loader<List<Dish>> loader, List<Dish> data) {
         adapter.setData(data);
-        recyclerDishes.setVisibility(View.VISIBLE);
-        adapter.notifyDataSetChanged();
+        recycler.setAdapter(adapter);
+        loading(false, data.size());
     }
 
     @Override
     public void onLoaderReset(Loader<List<Dish>> loader) {
         adapter.setData(null);
+        recycler.setAdapter(adapter);
     }
 
     @Override
@@ -103,6 +103,22 @@ public class DishesActivity extends AppCompatActivity implements View.OnClickLis
         //TODO details dialog
     }
 
+    private void loading(boolean start, int count) {
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        TextView resultText = (TextView) findViewById(R.id.result_text);
+        if (start) {
+            recycler.setVisibility(View.GONE);
+            resultText.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            recycler.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            if (count <= 0) {
+                resultText.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     private void initializeExtras() {
         card = getIntent().getParcelableExtra(Card.class.getCanonicalName());
     }
@@ -115,18 +131,16 @@ public class DishesActivity extends AppCompatActivity implements View.OnClickLis
             setTitle(card.getKind().getLabel());
         }
 
-        adapter = new DishAdapter(this);
-        recyclerDishes = (RecyclerView) findViewById(R.id.dishes);
-        recyclerDishes.setAdapter(adapter);
-        recyclerDishes.setHasFixedSize(true);
-        recyclerDishes.setItemAnimator(new DefaultItemAnimator());
+        adapter = new DishAdapter(getApplicationContext(), this);
+        recycler = (RecyclerView) findViewById(R.id.dishes);
+        recycler.setHasFixedSize(true);
+        recycler.setItemAnimator(new DefaultItemAnimator());
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerDishes.setLayoutManager(layoutManager);
-        recyclerDishes.setVisibility(View.GONE);
+        recycler.setLayoutManager(layoutManager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add);
-        fab.attachToRecyclerView(recyclerDishes);
+        fab.attachToRecyclerView(recycler);
         fab.setOnClickListener(this);
     }
 }

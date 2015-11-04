@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Кухмейстер</string>
     <string name="main_statistic">{0} блюд</string>
+    <string name="no_data">Добавьте ваши любимые блюда</string>
 
     <string name="action_settings">Настройки</string>
     <string name="abc_search_hint">Поиск</string>
@@ -8,5 +9,7 @@
     <string name="loading">Загрузка…</string>
     <string name="no_kind_data">Нет доступных видов блюд</string>
     <string name="check_lenten">Выбор из постных блюд</string>
+    <string name="dish_type_image">Тип блюда</string>
+    <string name="dish_contains_fish_image">Содержит рыбу</string>
 
 </resources>
